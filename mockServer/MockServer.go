@@ -1,13 +1,16 @@
 package mockServer
 
+import "encoding/json"
+
 type MockServer struct {
-	Name string
+	Username string
 	ServerName string
 	ServerCode string
 	Commands []Command
 }
 
 type Command struct {
+	Id int
 	Method string
 	Path string
 	Expectation any
@@ -16,7 +19,7 @@ type Command struct {
 func CreateMockServer(username string, servername string) MockServer {
 
 	mockServer := MockServer{
-
+		Username: username,
 		ServerName: servername,
 		ServerCode: GenerateCode(14),
 		Commands: []Command{},
@@ -25,7 +28,17 @@ func CreateMockServer(username string, servername string) MockServer {
 	return mockServer
 }
 
-func (m *MockServer) AddCommand(command Command) bool {
+func (m *MockServer) createCommand(method string, path string, expectation any) Command {
+	return Command{
+		Id: len(m.Commands) + 1,
+		Method: method,
+		Path: path,
+		Expectation: expectation,
+	}
+}
+
+func (m *MockServer) AddCommand(method string, path string, expectation any) bool {
+	command := m.createCommand(method, path, expectation)
 	if m.CheckIfDuplicate(command) {
 		return false
 	}
@@ -45,6 +58,16 @@ func (m *MockServer) DeleteCommand(command Command) bool {
 
 func (m *MockServer) GetCommands() []Command {
 	return m.Commands
+}
+
+func (m *MockServer) GetServer() ([]byte, error) {
+	serverInfo := map[string]interface{}{
+		"ServerCode": m.ServerCode,
+		"Username":   m.Username,
+		"ServerName": m.ServerName,
+		"Commands":   m.Commands,
+	}
+	return json.Marshal(serverInfo)
 }
 
 func (m *MockServer) EditCommand(prevCommand Command, newCommand Command) bool {

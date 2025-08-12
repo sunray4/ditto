@@ -33,6 +33,10 @@ func CreateMock(w http.ResponseWriter, req *http.Request) {
 	// Create the mock server
 	newMockServer := mockServer.CreateMockServer(username, servername)
 
+	// save to database  of servers
+
+	// save to user's list of servers (just server code)
+
 	fmt.Fprintf(w, "mock server created: %v\n", newMockServer)
 	
 }
