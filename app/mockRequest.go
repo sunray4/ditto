@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-type Command struct {
+type Endpoint struct {
 	Method string
 	Path string
 	Expectation any
@@ -28,7 +28,7 @@ func MockRequest(w http.ResponseWriter, r *http.Request) {
 	
 	switch r.Method {
 
-	case http.MethodGet: // returns all commands
+	case http.MethodGet: // returns all endpoints
 		fmt.Printf("received GET request\n")
 		serverInfo, err := server.GetServer()
 		if err != nil {
@@ -39,7 +39,7 @@ func MockRequest(w http.ResponseWriter, r *http.Request) {
 		w.Write(serverInfo)
 		return
 
-	case http.MethodPost: // adds a new command
+	case http.MethodPost: // adds a new endpoint
 		fmt.Printf("received POST request\n")
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
@@ -49,7 +49,7 @@ func MockRequest(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("body: %v\n", string(body))
 
 
-	case http.MethodPut: // updates a command
+	case http.MethodPut: // updates an endpoint
 		fmt.Printf("received PUT request\n")
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
